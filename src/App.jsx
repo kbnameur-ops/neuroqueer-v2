@@ -118,42 +118,50 @@ function LienCta({ href, className, style, children }) {
   );
 }
 
-/* Marque reconstruite en SVG — remplace par ton vrai fichier neuroqueer-mark.svg */
+/* Marque officielle (source : public/neuroqueer-mark.svg) — la prop `actif`
+   reçoit l'id d'un pôle (survol) : ce pôle reste allumé, les autres s'atténuent. */
 function Marque({ taille = 40, actif = null }) {
-  const noeuds = [
-    { id: "sante", x: 152, y: 48, r: 21, c: C.magenta },
-    { id: "plaidoyer", x: 42, y: 60, r: 14, c: C.orange },
-    { id: "culture", x: 44, y: 158, r: 18, c: C.lime },
-    { id: "reseau", x: 158, y: 142, r: 17, c: C.turquoise },
+  const poles = [
+    { id: "sante", x: 81, y: 19, r: 8, sw: 2.8, c: "#ff2f86" },
+    { id: "plaidoyer", x: 23, y: 30, r: 5, sw: 2, c: "#ffb03a" },
+    { id: "culture", x: 17, y: 80, r: 7, sw: 2.5, c: "#c8f030" },
+    { id: "reseau", x: 86, y: 72, r: 5.5, sw: 2.2, c: "#1de8d4" },
   ];
+  const attenue = (id) => actif && actif !== id;
   return (
-    <svg viewBox="0 0 200 200" width={taille} height={taille} role="img" aria-label="NeuroQueer">
-      {/* points gris : les liens pas encore faits */}
-      <circle cx="118" cy="38" r="4" fill="#8A93A6" opacity=".35" />
-      <circle cx="134" cy="104" r="4" fill="#8A93A6" opacity=".3" />
-      <circle cx="66" cy="128" r="3" fill="#8A93A6" opacity=".3" />
-      <circle cx="126" cy="72" r="11" fill="#C9CEDA" opacity=".28" />
-      {noeuds.map((n) => (
-        <line
-          key={n.id}
-          x1="100" y1="100" x2={n.x} y2={n.y}
-          stroke={n.c}
-          strokeWidth={actif && actif !== n.id ? 5 : 11}
-          strokeLinecap="round"
-          opacity={actif && actif !== n.id ? 0.3 : 1}
-          style={{ transition: "all .3s" }}
-        />
-      ))}
-      <line x1="126" y1="72" x2="158" y2="142" stroke={C.turquoise} strokeWidth="3" opacity=".5" strokeLinecap="round" />
-      {noeuds.map((n) => (
+    <svg viewBox="0 0 100 100" width={taille} height={taille} role="img" aria-label="NeuroQueer">
+      <g strokeLinecap="round" fill="none">
+        {/* branches colorées vers chaque pôle */}
+        {poles.map((p) => (
+          <line
+            key={p.id}
+            x1="44" y1="54" x2={p.x} y2={p.y}
+            stroke={p.c}
+            strokeWidth={p.sw}
+            opacity={attenue(p.id) ? 0.3 : 1}
+            style={{ transition: "all .3s" }}
+          />
+        ))}
+        {/* liens pas encore faits (décor) */}
+        <line x1="44" y1="54" x2="62" y2="34" stroke="#eee8da" strokeWidth="1.4" opacity=".5" />
+        <line x1="81" y1="19" x2="62" y2="34" stroke="#ff2f86" strokeWidth="1.2" opacity=".4" />
+        <line x1="62" y1="34" x2="86" y2="72" stroke="#1de8d4" strokeWidth="1.2" opacity=".3" />
+      </g>
+      {/* nœuds colorés : s'allument/s'atténuent selon `actif` */}
+      {poles.map((p) => (
         <circle
-          key={n.id} cx={n.x} cy={n.y} r={n.r} fill={n.c}
-          opacity={actif && actif !== n.id ? 0.35 : 1}
+          key={p.id} cx={p.x} cy={p.y} r={p.r} fill={p.c}
+          opacity={attenue(p.id) ? 0.35 : 1}
           style={{ transition: "all .3s" }}
         />
       ))}
-      <circle cx="100" cy="100" r="27" fill={C.creme} />
-      <circle cx="100" cy="100" r="11" fill={C.encre} />
+      {/* nœud décoratif + cœur + poussière d'étoiles */}
+      <circle cx="62" cy="34" r="3.5" fill="#eee8da" opacity=".7" />
+      <circle cx="44" cy="54" r="9.5" fill="#eee8da" />
+      <circle cx="44" cy="54" r="4" fill="#08070f" />
+      <circle cx="68" cy="50" r="1.6" fill="#eee8da" opacity=".3" />
+      <circle cx="30" cy="62" r="1.2" fill="#eee8da" opacity=".25" />
+      <circle cx="54" cy="18" r="1.4" fill="#eee8da" opacity=".2" />
     </svg>
   );
 }
